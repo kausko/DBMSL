@@ -1,0 +1,669 @@
+#agggreagatoin,indexing,map reduce
+
+>mongo  #running mongodb service
+>use mydata #creating database mydata if it prenets then it connects with it
+switched to db mydata
+
+>db #shows currnet using database
+mydata
+>show dbs #shows all database on logged in server(here localhost)
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+# as there is not a single record in database it is not showing craeted database
+>db.student.insert({"name":"suresh"})
+WriteResult({ "nInserted" : 1 })
+
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+mydata  0.000GB
+
+db.dropDatabase()
+{ "dropped" : "mydata", "ok" : 1 }
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+
+#MongoDB: Creating a Collection
+In MongoDB a collection is automatically created when it is referenced in any command
+db.student.insert({
+... name: "Viraj"
+... })
+WriteResult({ "nInserted" : 1 })
+# can be created manually db.createCollection(name, options)# need to specify name and option
+> db.student.drop()
+true
+>db.createCollection("student", { capped : true, size : 5242880, max : 5000 } )
+{ "ok" : 1 }
+
+db.student.insert({
+... regNo: "3014",
+... name: "Test Student",
+... course: {
+... courseName: "MCA",
+... duration: "3 Years"
+... },
+... address: {
+... city: "Bangalore",
+... state: "KA",
+... country: "India"
+... }
+... })
+WriteResult({ "nInserted" : 1 })
+db.drop.student()
+true
+
+db.student.update( { "regNo": "3014" }, {$set: {"name":"ss"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+#search Record
+db.student.find({"regNo":"3014"})
+{ "_id" : ObjectId("5d526b042b4444687f09a54b"), "regNo" : "3014", "name" : "ss", "course" : { "courseName" : "MCA", "duration" : "3 Years" }, "address" : { "city" : "Bangalore", "state" : "KA", "country" : "India" } }
+#Removing Record
+db.student.remove("regNo":"3014"})
+
+>db.mycol.find().pretty()
+
+{
+	"_id" : ObjectId("5d526b042b4444687f09a54b"),
+	"regNo" : "3014",
+	"name" : "ss",
+	"course" : {
+		"courseName" : "MCA",
+		"duration" : "3 Years"
+	},
+	"address" : {
+		"city" : "Bangalore",
+		"state" : "KA",
+		"country" : "India"
+	}
+}
+
+
+db.student.insert({
+... regNo: "3015",
+... name: "Test Student1",
+... course: {
+... courseName: "MCA1",
+... duration: "4 Years"
+... },
+... address: {
+... city: "Pune",
+... state: "MH",
+... country: "India"
+... }
+... })
+
+> db.student.find().pretty()
+{
+	"_id" : ObjectId("5d526b042b4444687f09a54b"),
+	"regNo" : "3014",
+	"name" : "ss",
+	"course" : {
+		"courseName" : "MCA",
+		"duration" : "3 Years"
+	},
+	"address" : {
+		"city" : "Bangalore",
+		"state" : "KA",
+		"country" : "India"
+	}
+}
+{
+	"_id" : ObjectId("5d5275ef2b4444687f09a54c"),
+	"regNo" : "3015",
+	"name" : "Test Student1",
+	"course" : {
+		"courseName" : "MCA1",
+		"duration" : "4 Years"
+	},
+	"address" : {
+		"city" : "Pune",
+		"state" : "MH",
+		"country" : "India"
+	}
+}
+>db.student.insert({
+... regNo: "3016",
+... name: "Test Student1",
+... course: {
+... courseName: "MC1",
+... duration: "4 Years"
+... },
+... address: {
+... city: "Pune",
+... state: "MH",
+... country: "India"
+... }
+... },
+{
+... regNo: "3017",
+... name: "Testt Student1",
+... course: {
+... courseName: "MA1",
+... duration: "4 Years"
+... },
+... address: {
+... city: "Pune",
+... state: "MH",
+... country: "India"
+... }
+... })
+
+>db.student.remove({"regNo":"ss"})
+WriteResult({ "nRemoved" : 0 })
+db.student.find().pretty()
+{
+	"_id" : ObjectId("5d526b042b4444687f09a54b"),
+	"regNo" : "3014",
+	"name" : "ss",
+	"course" : {
+		"courseName" : "MCA",
+		"duration" : "3 Years"
+	},
+	"address" : {
+		"city" : "Bangalore",
+		"state" : "KA",
+		"country" : "India"
+	}
+}
+{
+	"_id" : ObjectId("5d5275ef2b4444687f09a54c"),
+	"regNo" : "3015",
+	"name" : "Test Student1",
+	"course" : {
+		"courseName" : "MCA1",
+		"duration" : "4 Years"
+	},
+	"address" : {
+		"city" : "Pune",
+		"state" : "MH",
+		"country" : "India"
+	}
+}
+{
+	"_id" : ObjectId("5d52781d2b4444687f09a54d"),
+	"regNo" : "3016",
+	"name" : "Test Student1",
+	"course" : {
+		"courseName" : "MC1",
+		"duration" : "4 Years"
+	},
+	"address" : {
+		"city" : "Pune",
+		"state" : "MH",
+		"country" : "India"
+	}
+}
+
+#Remove All Documents
+>db.student.remove({})
+WriteResult({ "nRemoved" : 3 })
+>db.student.find().pretty()
+>db.student.find({},{"name":"ss"}).limit(4) #it limits number of records as 4
+{ "_id" : ObjectId("5d527fec2b4444687f09a54e"), "name" : "Test Student1" }
+{ "_id" : ObjectId("5d527ffb2b4444687f09a54f"), "name" : "Test Student1" }
+{ "_id" : ObjectId("5d5280602b4444687f09a550"), "name" : "Test Student" }
+{ "_id" : ObjectId("5d5280702b4444687f09a551"), "name" : "Test Student" }
+
+>db.student.find({},{"name":"ss"}).limit(4).skip(1) #it skips firs number of records
+{ "_id" : ObjectId("5d527ffb2b4444687f09a54f"), "name" : "Test Student1" }
+{ "_id" : ObjectId("5d5280602b4444687f09a550"), "name" : "Test Student" }
+{ "_id" : ObjectId("5d5280702b4444687f09a551"), "name" : "Test Student" }
+
+>db.student.find({},{"name":"ss"}).limit(4).sort({"regNo":-1}) #sorts number of records in descending order of the collections
+{ "_id" : ObjectId("5d5280702b4444687f09a551"), "name" : "Test Student" }
+{ "_id" : ObjectId("5d527fec2b4444687f09a54e"), "name" : "Test Student1" }
+{ "_id" : ObjectId("5d527ffb2b4444687f09a54f"), "name" : "Test Student1" }
+{ "_id" : ObjectId("5d5280602b4444687f09a550"), "name" : "Test Student" }
+>db.student.find({},{"name":"ss"}).limit(4).sort({"regNo":1}) #sorts number of records in Ascending order of the collections
+{ "_id" : ObjectId("5d5280602b4444687f09a550"), "name" : "Test Student" }
+{ "_id" : ObjectId("5d527ffb2b4444687f09a54f"), "name" : "Test Student1" }
+{ "_id" : ObjectId("5d527fec2b4444687f09a54e"), "name" : "Test Student1" }
+{ "_id" : ObjectId("5d5280702b4444687f09a551"), "name" : "Test Student" }
+---------------------------------------------------------------------------------------------------------------------
+
+Please observe that the record retrieved contains an attribute called _id with some unique identifier value called ObjectId which acts as a document identifier.
+
+Index:- It can store collection’s data set in a form that is easy to traverse.
+	Idexes help MongoDB find documents that match the query	 criteria without performing a collection scan
+	Indexes store field values in the order of the value.
+
+>db.student.createIndex({regNo:1}) #single filed index
+>db.student.createIndex({regNo:1,name:1}) #multi Valued(Compound Indexes,MongoDB limits the fields to a maximum of 31) Index
+>db.student.getIndexes() #is used to find all of the indexes in a collection.
+> db.student.dropIndex({regNo:1}) #used to drop index created with createIndex()
+{ "nIndexesWas" : 3, "ok" : 1 }
+
+
+> db.student.dropIndexes() #drops all Index created with createINdex
+{
+	"nIndexesWas" : 2,
+	"msg" : "non-_id indexes dropped for collection",
+	"ok" : 1
+}
+>db.student.find().sort({regNo: 1}) #sort record in asc 
+{ "_id" : ObjectId("5d5280602b4444687f09a550"), "regNo" : "3014", "name" : "Test Student", "course" : { "courseName" : "MCA", "duration" : "3 Years" }, "address" : { "city" : "Bangalore", "state" : "KA", "country" : "India" } }
+{ "_id" : ObjectId("5d527ffb2b4444687f09a54f"), "regNo" : "3015", "name" : "Test Student1", "course" : { "courseName" : "MCA1", "duration" : "4 Years" }, "address" : { "city" : "Pune", "state" : "MH", "country" : "India" } }
+{ "_id" : ObjectId("5d527fec2b4444687f09a54e"), "regNo" : "3016", "name" : "Test Student1", "course" : { "courseName" : "MC1", "duration" : "4 Years" }, "address" : { "city" : "Pune", "state" : "MH", "country" : "India" } }
+{ "_id" : ObjectId("5d5280702b4444687f09a551"), "regNo" : "3017", "name" : "Test Student", "course" : { "courseName" : "MCA", "duration" : "3 Years" }, "address" : { "city" : "Bangalore", "state" : "KA", "country" : "India" } }
+
+
+>db.student.find().sort({regNo: -1})#sort record in asc 
+{ "_id" : ObjectId("5d5280702b4444687f09a551"), "regNo" : "3017", "name" : "Test Student", "course" : { "courseName" : "MCA", "duration" : "3 Years" }, "address" : { "city" : "Bangalore", "state" : "KA", "country" : "India" } }
+{ "_id" : ObjectId("5d527fec2b4444687f09a54e"), "regNo" : "3016", "name" : "Test Student1", "course" : { "courseName" : "MC1", "duration" : "4 Years" }, "address" : { "city" : "Pune", "state" : "MH", "country" : "India" } }
+{ "_id" : ObjectId("5d527ffb2b4444687f09a54f"), "regNo" : "3015", "name" : "Test Student1", "course" : { "courseName" : "MCA1", "duration" : "4 Years" }, "address" : { "city" : "Pune", "state" : "MH", "country" : "India" } }
+{ "_id" : ObjectId("5d5280602b4444687f09a550"), "regNo" : "3014", "name" : "Test Student", "course" : { "courseName" : "MCA", "duration" : "3 Years" }, "address" : { "city" : "Bangalore", "state" : "KA", "country" : "India" } }
+#aggregate in mongoDb
+db.student.aggregate([ { $match: { "regNo":"3014" } } ] ).pretty() #returns an array of values
+{
+	"_id" : ObjectId("5d5280602b4444687f09a550"),
+	"regNo" : "3014",
+	"name" : "Test Student",
+	"course" : {
+		"courseName" : "MCA",
+		"duration" : "3 Years"
+	},
+	"address" : {
+		"city" : "Bangalore",
+		"state" : "KA",
+		"country" : "India"
+	}
+}
+
+>db.student.aggregate([ { $group: { _id:"$regNo", total_qty:{$sum:1} } } ] ).pretty()
+{ "_id" : "3017", "total_qty" : 1 }
+{ "_id" : "3014", "total_qty" : 1 }
+{ "_id" : "3015", "total_qty" : 1 }
+{ "_id" : "3016", "total_qty" : 1 }
+
+>db.student.aggregate([ { $group:  {_id:"$regNo", total_qty:{$sum:1} } }, {$sort:{total : -1} } ] )
+>db.student.aggregate([ { $group:  {_id:"$regNo", total_qty:{$min:"$regNo"} } } ] )
+
+
+>db.student.aggregate([ { $group:  {_id:"$regNo", min:{$min:"$regNo" } } }  ] )
+---------------------------------------------------------------------------
+
+
+#map Reduce Exaple
+>db.orders.insert( { custId: 3016, amount: 200, status: "A" }, { custId: 3017,   amount: 250,   status: "B" }, { custId: 3018,   amount: 350,   status: "C"  } )
+WriteResult({ "nInserted" : 1 })
+>db.orders.insert( { custId: 3019, amount: 400, status: "A" }, { custId: 3020,   amount: 450,   status: "A" }, { custId: 3021,   amount: 550,   status: "C"  } )
+WriteResult({ "nInserted" : 1 })
+
+
+>var mapFunction1 = function() {
+...                 emit(this.cust_id, this.price);
+...               };
+
+var reduceFunction1 = function(CustId, Prices) {
+                     return Array.sum(Prices);
+                  };
+
+ >db.orders.mapReduce( 				#calling map reduce through MongoDB
+...                 mapFunction1,
+...                 reduceFunction1,
+...                 { out: "map_reduce_example" }
+...                )
+{
+	"result" : "map_reduce_example",
+	"timeMillis" : 613,
+	"counts" : {
+		"input" : 2,
+		"emit" : 2,
+		"reduce" : 1,
+		"output" : 1
+	},
+	"ok" : 1
+}
+
+
+
+-----------------------------------------------
+db.books.insert( {
+    "title" : "MongoDB: The Definitive Guide",
+    "published" : "2013-05-23",
+    "authors": [
+        { "firstName" : "Kristina",  "lastName" : "Chodorow" }
+    ],
+    "categories" : [ "Databases", "NoSQL", "Programming" ],
+    "publisher" : { "name" : "O'Reilly" },
+    "price" : 32.99
+} )
+
+
+db.books.insert( {
+    "title" : "MongoDB Applied Design Patterns",
+    "published" : "2013-03-19",
+    "authors": [
+        { "firstName" : "Rick",  "lastName" : "Copeland" }
+    ],
+    "categories" : [ "Databases", "NoSQL", "Patterns", "Programming" ],
+    "publisher" : { "name" : "O'Reilly" },
+    "price" : 32.99
+} )
+
+
+db.books.insert( {
+    "title" : "MongoDB in Action",
+    "published" : "2011-12-16",
+    "authors": [
+        { "firstName" : "Kyle",  "lastName" : "Banker" }
+    ],
+    "categories" : [ "Databases", "NoSQL", "Programming" ],
+    "publisher" : { "name" : "Manning" },
+    "price" : 30.83
+} )
+
+db.books.insert( {
+    "title" : "NoSQL Distilled: A Brief Guide to the Emerging World of Polyglot Persistence",
+    "published" : "2012-08-18",
+    "authors": [
+        { "firstName" : "Pramod J.",  "lastName" : "Sadalage" },
+        { "firstName" : "Martin",  "lastName" : "Fowler" }
+    ],
+    "categories" : [ "Databases", "NoSQL" ],
+    "publisher" : { "name" : "Addison Wesley" },
+    "price" : 26.36
+} )
+
+db.books.insert( {
+    "title" : "Scaling MongoDB",
+    "published" : "2011-03-07",
+    "authors": [
+        { "firstName" : "Kristina",  "lastName" : "Chodorow" }
+    ],
+    "categories" : [ "Databases", "NoSQL" ],
+    "publisher" : { "name" : "O'Reilly" },
+    "price" : 25.30
+} )
+
+db.books.insert( {
+    "title" : "50 Tips and Tricks for MongoDB Developers",
+    "published" : "2011-05-06",
+    "authors": [
+        { "firstName" : "Kristina",  "lastName" : "Chodorow" }
+    ],
+    "categories" : [ "Databases", "NoSQL", "Programming" ],
+    "publisher" : { "name" : "O'Reilly" },
+    "price" : 25.08
+} )
+
+db.books.insert( {
+    "title" : "MongoDB in Action, 2nd Edition",
+    "published" : "2014-12-01",
+    "authors": [
+        { "firstName" : "Kyle",  "lastName" : "Banker" },
+        { "firstName" : "Peter",  "lastName" : "Bakkum" },
+        { "firstName" : "Tim",  "lastName" : "Hawkins" }
+    ],
+    "categories" : [ "Databases", "NoSQL", "Programming" ],
+    "publisher" : { "name" : "Manning" },
+    "price" : 26.66
+} )
+
+db.books.insert( {
+    "title" : "Node.js, MongoDB, and AngularJS Web Development",
+    "published" : "2014-04-04",
+    "authors": [
+        { "firstName" : "Brad",  "lastName" : "Dayley" }
+    ],
+    "categories" : [ "Databases", "NoSQL", "Programming", "Web" ],
+    "publisher" : { "name" : "Addison Wesley" },
+    "price" : 34.35
+} )
+
+>var mapFunction11 = function() {for (var index = 0; index < this.authors.length; ++index) {var author = this.authors[index]; emit(author.firstName,1);}; };
+
+>var reduceFunction11 = function(author, counters) {
+                     count = 0;
+ 
+        for (var index = 0; index < counters.length; ++index) {
+            count += counters[index];
+        }
+ 
+        return count;
+                  };
+> db.books.mapReduce(mapFunction11,reduceFunction11,{ out: "map_reduce_example"})
+{
+	"result" : "map_reduce_example",
+	"timeMillis" : 521,
+	"counts" : {
+		"input" : 8,
+		"emit" : 11,
+		"reduce" : 2,
+		"output" : 8
+	},
+	"ok" : 1
+}
+
+
+>db.books.mapReduce(mapFunction11,reduceFunction11,{ out: "map_reduce_example"})
+#Count average book price by publisher
+
+var mapfun11= function() {
+        emit( this.publisher, { count: 1, price: this.price } );
+    };
+ var   reducefun12= function(publisher, values) {
+        var value = { count: 0, price: 0 };
+ 
+        for (var index = 0; index < values.length; ++index) {
+            value.count += values[index].count;
+            value.price += values[index].price;
+        };
+ 
+        return value;
+    };
+var finalizefun= function(publisher, value) {
+        value.average = currency + ( value.price / value.count ).toFixed(2);
+        return value;
+    };
+
+>db.books.mapReduce(mapfun11,reducefun12,{ out: "map_reduce_example"},{finalize:finalizefun})
+{
+	"result" : "map_reduce_example",
+	"timeMillis" : 417,
+	"counts" : {
+		"input" : 8,
+		"emit" : 8,
+		"reduce" : 3,
+		"output" : 3
+	},
+	"ok" : 1
+}
+--------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+In MongoDB the conditional operators are :
+
+(>) greater than - $gt
+
+(<) less than - $lt
+
+(>=) greater than equal to - $gte
+
+(<= ) less than equal to - $lte
+>db.books.find({"price" : {$gt : 20}}).pretty()
+{
+	"_id" : ObjectId("5d5a37f5a7c9d5924f68df94"),
+	"title" : "MongoDB: The Definitive Guide",
+	"published" : "2013-05-23",
+	"authors" : [
+		{
+			"firstName" : "Kristina",
+			"lastName" : "Chodorow"
+		}
+	],
+	"categories" : [
+		"Databases",
+		"NoSQL",
+		"Programming"
+	],
+	"publisher" : {
+		"name" : "O'Reilly"
+	},
+	"price" : 32.99
+}
+{
+	"_id" : ObjectId("5d5a380ca7c9d5924f68df95"),
+	"title" : "MongoDB Applied Design Patterns",
+	"published" : "2013-03-19",
+	"authors" : [
+		{
+			"firstName" : "Rick",
+			"lastName" : "Copeland"
+		}
+	],
+	"categories" : [
+		"Databases",
+		"NoSQL",
+		"Patterns",
+		"Programming"
+	],
+	"publisher" : {
+		"name" : "O'Reilly"
+	},
+	"price" : 32.99
+}
+{
+	"_id" : ObjectId("5d5a3837a7c9d5924f68df96"),
+	"title" : "MongoDB in Action",
+	"published" : "2011-12-16",
+	"authors" : [
+		{
+			"firstName" : "Kyle",
+			"lastName" : "Banker"
+		}
+	],
+	"categories" : [
+		"Databases",
+		"NoSQL",
+		"Programming"
+	],
+	"publisher" : {
+		"name" : "Manning"
+	},
+	"price" : 30.83
+}
+{
+	"_id" : ObjectId("5d5a3841a7c9d5924f68df97"),
+	"title" : "NoSQL Distilled: A Brief Guide to the Emerging World of Polyglot Persistence",
+	"published" : "2012-08-18",
+	"authors" : [
+		{
+			"firstName" : "Pramod J.",
+			"lastName" : "Sadalage"
+		},
+		{
+			"firstName" : "Martin",
+			"lastName" : "Fowler"
+		}
+	],
+	"categories" : [
+		"Databases",
+		"NoSQL"
+	],
+	"publisher" : {
+		"name" : "Addison Wesley"
+	},
+	"price" : 26.36
+}
+{
+	"_id" : ObjectId("5d5a3867a7c9d5924f68df98"),
+	"title" : "Scaling MongoDB",
+	"published" : "2011-03-07",
+	"authors" : [
+		{
+			"firstName" : "Kristina",
+			"lastName" : "Chodorow"
+		}
+	],
+	"categories" : [
+		"Databases",
+		"NoSQL"
+	],
+	"publisher" : {
+		"name" : "O'Reilly"
+	},
+	"price" : 25.3
+}
+{
+	"_id" : ObjectId("5d5a3876a7c9d5924f68df99"),
+	"title" : "50 Tips and Tricks for MongoDB Developers",
+	"published" : "2011-05-06",
+	"authors" : [
+		{
+			"firstName" : "Kristina",
+			"lastName" : "Chodorow"
+		}
+	],
+	"categories" : [
+		"Databases",
+		"NoSQL",
+		"Programming"
+	],
+	"publisher" : {
+		"name" : "O'Reilly"
+	},
+	"price" : 25.08
+}
+{
+	"_id" : ObjectId("5d5a388ba7c9d5924f68df9a"),
+	"title" : "MongoDB in Action, 2nd Edition",
+	"published" : "2014-12-01",
+	"authors" : [
+		{
+			"firstName" : "Kyle",
+			"lastName" : "Banker"
+		},
+		{
+			"firstName" : "Peter",
+			"lastName" : "Bakkum"
+		},
+		{
+			"firstName" : "Tim",
+			"lastName" : "Hawkins"
+		}
+	],
+	"categories" : [
+		"Databases",
+		"NoSQL",
+		"Programming"
+	],
+	"publisher" : {
+		"name" : "Manning"
+	},
+	"price" : 26.66
+}
+{
+	"_id" : ObjectId("5d5a3895a7c9d5924f68df9b"),
+	"title" : "Node.js, MongoDB, and AngularJS Web Development",
+	"published" : "2014-04-04",
+	"authors" : [
+		{
+			"firstName" : "Brad",
+			"lastName" : "Dayley"
+		}
+	],
+	"categories" : [
+		"Databases",
+		"NoSQL",
+		"Programming",
+		"Web"
+	],
+	"publisher" : {
+		"name" : "Addison Wesley"
+	},
+	"price" : 34.35
+}
+> db.books.find({"price" : {$gt : 20}}).pretty()
+
+
+
+
+
+
+
+

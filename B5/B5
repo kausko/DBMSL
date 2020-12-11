@@ -1,0 +1,74 @@
+> db.inventory.insertMany( [
+...    { item: "journal", instock: [ { warehouse: "A", qty: 5 }, { warehouse: "C", qty: 15 } ] },
+...    { item: "notebook", instock: [ { warehouse: "C", qty: 5 } ] },
+...    { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 15 } ] },
+...    { item: "planner", instock: [ { warehouse: "A", qty: 40 }, { warehouse: "B", qty: 5 } ] },
+...    { item: "postcard", instock: [ { warehouse: "B", qty: 15 }, { warehouse: "C", qty: 35 } ] }
+... ]);
+{
+	"acknowledged" : true,
+	"insertedIds" : [
+		ObjectId("5fc362b150b8174660d6d8d7"),
+		ObjectId("5fc362b150b8174660d6d8d8"),
+		ObjectId("5fc362b150b8174660d6d8d9"),
+		ObjectId("5fc362b150b8174660d6d8da"),
+		ObjectId("5fc362b150b8174660d6d8db")
+	]
+}
+
+> db.inventory.find( { 'instock.qty': { $lte: 20 } } )
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d7"), "item" : "journal", "instock" : [ { "warehouse" : "A", "qty" : 5 }, { "warehouse" : "C", "qty" : 15 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d8"), "item" : "notebook", "instock" : [ { "warehouse" : "C", "qty" : 5 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d9"), "item" : "paper", "instock" : [ { "warehouse" : "A", "qty" : 60 }, { "warehouse" : "B", "qty" : 15 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8da"), "item" : "planner", "instock" : [ { "warehouse" : "A", "qty" : 40 }, { "warehouse" : "B", "qty" : 5 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8db"), "item" : "postcard", "instock" : [ { "warehouse" : "B", "qty" : 15 }, { "warehouse" : "C", "qty" : 35 } ] }
+
+>  db.inventory.find( { 'instock.0.qty': { $lte: 20 } } )
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d7"), "item" : "journal", "instock" : [ { "warehouse" : "A", "qty" : 5 }, { "warehouse" : "C", "qty" : 15 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d8"), "item" : "notebook", "instock" : [ { "warehouse" : "C", "qty" : 5 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8db"), "item" : "postcard", "instock" : [ { "warehouse" : "B", "qty" : 15 }, { "warehouse" : "C", "qty" : 35 } ] }
+
+> db.inventory.find( { "instock.qty": 5, "instock.warehouse": "A" } )
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d7"), "item" : "journal", "instock" : [ { "warehouse" : "A", "qty" : 5 }, { "warehouse" : "C", "qty" : 15 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8da"), "item" : "planner", "instock" : [ { "warehouse" : "A", "qty" : 40 }, { "warehouse" : "B", "qty" : 5 } ] }
+
+> db.inventory.find({ instock: { $all: [{$elemMatch: { warehouse: "A" }}, {$elemMatch: {warehouse: "B"}}] }})
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d9"), "item" : "paper", "instock" : [ { "warehouse" : "A", "qty" : 60 }, { "warehouse" : "B", "qty" : 15 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8da"), "item" : "planner", "instock" : [ { "warehouse" : "A", "qty" : 40 }, { "warehouse" : "B", "qty" : 5 } ] }
+
+> db.inventory.find({ instock: { $size: 2 } })
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d7"), "item" : "journal", "instock" : [ { "warehouse" : "A", "qty" : 5 }, { "warehouse" : "C", "qty" : 15 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d9"), "item" : "paper", "instock" : [ { "warehouse" : "A", "qty" : 60 }, { "warehouse" : "B", "qty" : 15 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8da"), "item" : "planner", "instock" : [ { "warehouse" : "A", "qty" : 40 }, { "warehouse" : "B", "qty" : 5 } ] }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8db"), "item" : "postcard", "instock" : [ { "warehouse" : "B", "qty" : 15 }, { "warehouse" : "C", "qty" : 35 } ] }
+> db.inventory.find({ instock: { $size: 1 } })
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d8"), "item" : "notebook", "instock" : [ { "warehouse" : "C", "qty" : 5 } ] }
+
+> db.inventory.update(
+        { "item": "notebook" },
+        {
+                $push: {
+                        instock: {
+                                $each: [ { "warehouse": "D", "qty": 10 }, { "warehouse": "E", "qty": 15 }, { "warehouse": "F", "qty": 20 } ],
+                                $slice: -2
+                        }
+                }
+        }
+)
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.inventory.find({ "item": "notebook" })
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d8"), "item" : "notebook", "instock" : [ { "warehouse" : "E", "qty" : 15 }, { "warehouse" : "F", "qty" : 20 } ] }
+
+
+> db.inventory.aggregate([ { $unwind: "$instock" }])
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d7"), "item" : "journal", "instock" : { "warehouse" : "A", "qty" : 5 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d7"), "item" : "journal", "instock" : { "warehouse" : "C", "qty" : 15 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d8"), "item" : "notebook", "instock" : { "warehouse" : "E", "qty" : 15 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d8"), "item" : "notebook", "instock" : { "warehouse" : "F", "qty" : 20 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d9"), "item" : "paper", "instock" : { "warehouse" : "A", "qty" : 60 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8d9"), "item" : "paper", "instock" : { "warehouse" : "B", "qty" : 15 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8da"), "item" : "planner", "instock" : { "warehouse" : "A", "qty" : 40 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8da"), "item" : "planner", "instock" : { "warehouse" : "B", "qty" : 5 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8db"), "item" : "postcard", "instock" : { "warehouse" : "B", "qty" : 15 } }
+{ "_id" : ObjectId("5fc362b150b8174660d6d8db"), "item" : "postcard", "instock" : { "warehouse" : "C", "qty" : 35 } }

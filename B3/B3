@@ -1,0 +1,87 @@
+> db.software.aggregate([     {          $group: {              "_id": "$displayName",             "publisher": { $first: "$publisher" },             "machine": { $addToSet: { machine: '$machine' } }         }      },     {         $addFields: {             count: { $size: '$machine' },         }     },     { $sort: { count: -1 } },     { $project: { machine: 0 } },     { $skip: 0 },      { $limit: 10 } ]).pretty()
+{ "_id" : "Yarn", "publisher" : "Yarn Contributors", "count" : 4 }
+{ "_id" : "Google Update Helper", "publisher" : "Google LLC", "count" : 4 }
+{
+	"_id" : "Microsoft Visual C++ 2008 Redistributable - x86 9.0.30729.6161",
+	"publisher" : "Microsoft Corporation",
+	"count" : 4
+}
+{ "_id" : "Google Chrome", "publisher" : "Google LLC", "count" : 4 }
+{
+	"_id" : "Microsoft Edge",
+	"publisher" : "Microsoft Corporation",
+	"count" : 4
+}
+{
+	"_id" : "Python Launcher",
+	"publisher" : "Python Software Foundation",
+	"count" : 4
+}
+{ "_id" : "Microsoft Edge Update", "publisher" : "N/A", "count" : 4 }
+{ "_id" : "Node.js", "publisher" : "Node.js Foundation", "count" : 4 }
+{
+	"_id" : "Microsoft OneDrive",
+	"publisher" : "Microsoft Corporation",
+	"count" : 3
+}
+{
+	"_id" : "Microsoft Visual C++ 2013 x86 Minimum Runtime - 12.0.21005",
+	"publisher" : "Microsoft Corporation",
+	"count" : 3
+}
+> 
+
+> db.software.aggregate([     { $match: { publisher: "Microsoft Corporation" } },     {          $group: {              "_id": "$displayName",             "publisher": { $first: "$publisher" },             "machine": { $addToSet: { machine: '$machine' } }         }      },     {         $addFields: {             count: { $size: '$machine' },         }     },     { $sort: { count: -1 } },     { $project: { machine: 0 } },     { $skip: 0 },      { $limit: 10 } ]).pretty()
+
+{
+	"_id" : "Microsoft Edge",
+	"publisher" : "Microsoft Corporation",
+	"count" : 4
+}
+{
+	"_id" : "Microsoft Visual C++ 2008 Redistributable - x86 9.0.30729.6161",
+	"publisher" : "Microsoft Corporation",
+	"count" : 4
+}
+{
+	"_id" : "Microsoft Visual C++ 2013 x86 Minimum Runtime - 12.0.21005",
+	"publisher" : "Microsoft Corporation",
+	"count" : 3
+}
+{
+	"_id" : "Microsoft Visual Studio Code (User)",
+	"publisher" : "Microsoft Corporation",
+	"count" : 3
+}
+{
+	"_id" : "Microsoft Visual C++ 2013 x86 Additional Runtime - 12.0.21005",
+	"publisher" : "Microsoft Corporation",
+	"count" : 3
+}
+{
+	"_id" : "Microsoft OneDrive",
+	"publisher" : "Microsoft Corporation",
+	"count" : 3
+}
+{
+	"_id" : "WinRT Intellisense PPI - Other Languages",
+	"publisher" : "Microsoft Corporation",
+	"count" : 2
+}
+{
+	"_id" : "Office 16 Click-to-Run Extensibility Component",
+	"publisher" : "Microsoft Corporation",
+	"count" : 2
+}
+{
+	"_id" : "Windows SDK for Windows Store Apps",
+	"publisher" : "Microsoft Corporation",
+	"count" : 2
+}
+{
+	"_id" : "WinRT Intellisense Desktop - Other Languages",
+	"publisher" : "Microsoft Corporation",
+	"count" : 2
+}
+> 
+

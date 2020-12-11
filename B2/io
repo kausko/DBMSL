@@ -1,0 +1,138 @@
+> db.createCollection("users")
+{ "ok" : 1 }
+> db.users.find()
+
+> db.users.insertMany([{
+... "_id" : ObjectId("5f911f64af73207647438f78"),
+... "name" : "Kaustubh",
+... "age" : 20,
+... "email" : "kaustubhodak1@gmail.com",
+... "gender" : "Male"
+... },
+... {
+... "_id" : ObjectId("5f911f94af73207647438f79"),
+... "name" : "Tanmay",
+... "age" : 20,
+... "email" : "tanmaypardeshi@gmail.com",
+... "gender" : "Male"
+... },
+... {
+... "_id" : ObjectId("5f911fa9af73207647438f7a"),
+... "name" : "Ananya",
+... "age" : 14,
+... "email" : "ananyaodak@gmail.com",
+... "gender" : "Female"
+... },
+... {
+... "_id" : ObjectId("5f911fcfaf73207647438f7b"),
+... "name" : "Shreya",
+... "age" : 43,
+... "email" : "shreyaodak@yahoo.co.in",
+... "gender" : "Female"
+... },
+... {
+... "_id" : ObjectId("5f912008af73207647438f7c"),
+... "name" : "Pranjal",
+... "age" : 19,
+... "email" : "pranjalnewalkar@gmail.com",
+... "gender" : "Female"
+... }
+... ])
+
+> db.users.find({name: "Kaustubh"}).pretty()
+{
+	"_id" : ObjectId("5f911f64af73207647438f78"),
+	"name" : "Kaustubh",
+	"age" : 20,
+	"email" : "kaustubhodak1@gmail.com",
+	"gender" : "Male"
+}
+
+> db.users.deleteOne({"_id": ObjectId("5f912008af73207647438f7c")})
+{ "acknowledged" : true, "deletedCount" : 1 }
+
+> db.users.find().pretty()
+{
+	"_id" : ObjectId("5f911f64af73207647438f78"),
+	"name" : "Kaustubh",
+	"age" : 20,
+	"email" : "kaustubhodak1@gmail.com",
+	"gender" : "Male"
+}
+{
+	"_id" : ObjectId("5f911f94af73207647438f79"),
+	"name" : "Tanmay",
+	"age" : 20,
+	"email" : "tanmaypardeshi@gmail.com",
+	"gender" : "Male"
+}
+{
+	"_id" : ObjectId("5f911fa9af73207647438f7a"),
+	"name" : "Ananya",
+	"age" : 14,
+	"email" : "ananyaodak@gmail.com",
+	"gender" : "Female"
+}
+{
+	"_id" : ObjectId("5f911fcfaf73207647438f7b"),
+	"name" : "Shreya",
+	"age" : 43,
+	"email" : "shreyaodak@yahoo.co.in",
+	"gender" : "Female"
+}
+
+> db.users.updateOne({"name": "Kaustubh"},{ $set: {"email": "kaustubhodak@hotmail.com"} })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+> db.users.find({"name": "Kaustubh"}).pretty()
+{
+	"_id" : ObjectId("5f911f64af73207647438f78"),
+	"name" : "Kaustubh",
+	"age" : 20,
+	"email" : "kaustubhodak@hotmail.com",
+	"gender" : "Male"
+}
+
+> db.users.find({ $and: [ {age: {$lt:40}}, {gender: "Male"}]}).pretty()
+{
+	"_id" : ObjectId("5f911f64af73207647438f78"),
+	"name" : "Kaustubh",
+	"age" : 20,
+	"email" : "kaustubhodak@hotmail.com",
+	"gender" : "Male"
+}
+{
+	"_id" : ObjectId("5f911f94af73207647438f79"),
+	"name" : "Tanmay",
+	"age" : 20,
+	"email" : "tanmaypardeshi@gmail.com",
+	"gender" : "Male"
+}
+
+> db.users.aggregate([ { $match: { gender: "Male" } }, { $group: { _id: "_id", total: { $sum: "$age" } } }])
+{ "_id" : "_id", "total" : 40 }
+
+> db.users.createIndex({ email: 1 })
+
+> db.users.getIndexes()
+[
+	{
+		"v" : 2,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_"
+	},
+	{
+		"v" : 2,
+		"key" : {
+			"email" : 1
+		},
+		"name" : "email_1"
+	}
+]
+
+
+
+
+
+

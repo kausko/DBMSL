@@ -1,0 +1,86 @@
+> db.accounts.find().pretty()
+{
+	"_id" : ObjectId("5facd685445998973b973c69"),
+	"name" : "AB",
+	"type" : "Current Account",
+	"balance" : 1234560
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c6a"),
+	"name" : "AB",
+	"type" : "Savings Account",
+	"balance" : 135790
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c6b"),
+	"name" : "AB",
+	"type" : "FD Account",
+	"balance" : 1470258
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c6c"),
+	"name" : "CD",
+	"type" : "Current Account",
+	"balance" : 1029384
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c6d"),
+	"name" : "CD",
+	"type" : "Savings Account",
+	"balance" : 293847
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c6e"),
+	"name" : "EF",
+	"type" : "FD Account",
+	"balance" : 575757
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c6f"),
+	"name" : "EF",
+	"type" : "Salary account",
+	"balance" : 666666
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c70"),
+	"name" : "EF",
+	"type" : "RD Account",
+	"balance" : 474747
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c71"),
+	"name" : "GH",
+	"type" : "NRI Account",
+	"balance" : 777777
+}
+{
+	"_id" : ObjectId("5facd685445998973b973c72"),
+	"name" : "GH",
+	"type" : "FD Account",
+	"balance" : 111111
+}
+
+
+> var accMapper = function() { emit(this.name, this.balance); };
+
+> var accReducer = function(name, bal) {
+... return { "Total": Array.sum(bal), "Average": Array.avg(bal) }
+... };
+
+> db.accounts.mapReduce(accMapper, accReducer, { out: "acc_map_reduce" })
+{ "result" : "acc_map_reduce", "ok" : 1 }
+
+> db.acc_map_reduce.find().pretty()
+{ "_id" : "CD", "value" : { "Total" : 1323231, "Average" : 661615.5 } }
+{ "_id" : "EF", "value" : { "Total" : 1717170, "Average" : 572390 } }
+{
+	"_id" : "AB",
+	"value" : {
+		"Total" : 2840608,
+		"Average" : 946869.3333333334
+	}
+}
+{ "_id" : "GH", "value" : { "Total" : 888888, "Average" : 444444 } }
+
+> 
+

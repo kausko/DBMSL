@@ -1,0 +1,64 @@
+create trigger after_book_update
+	after update
+	on Library for each row
+	begin 
+		if old.book_name <> new.book_name then
+			insert into Library_Audit values (new.id, old.book_name, CONCAT("UPDATED TO ", new.book_name));
+		end if;
+	end//
+
+
+create trigger after_book_delete 
+after delete 
+on Library for each row 
+insert into Library_Audit values (old.id, old.book_name, 'DELETED');
+
+mysql> select * from Library;
++----+-----------+
+| id | book_name |
++----+-----------+
+|  1 | Never     |
+|  2 | Going to  |
+|  3 | Let       |
+|  4 | You       |
+|  5 | Down      |
++----+-----------+
+5 rows in set (0.00 sec)
+
+mysql> update Library set book_name="Gonna" where book_name="Going to";
+Query OK, 1 row affected (0.52 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update Library set book_name="Give" where book_name="Let";
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> delete from Library where book_name="Down";
+Query OK, 1 row affected (0.39 sec)
+
+mysql> insert into Library values (5, "Up");
+Query OK, 1 row affected (0.52 sec)
+
+mysql> select * from Library;
++----+-----------+
+| id | book_name |
++----+-----------+
+|  1 | Never     |
+|  2 | Gonna     |
+|  3 | Give      |
+|  4 | You       |
+|  5 | Up        |
++----+-----------+
+5 rows in set (0.01 sec)
+
+mysql> select * from Library_Audit;
++----+-----------+------------------+
+| id | book_name | status           |
++----+-----------+------------------+
+|  2 | Going to  | UPDATED TO Gonna |
+|  3 | Let       | UPDATED TO Give  |
+|  5 | Down      | DELETED          |
++----+-----------+------------------+
+3 rows in set (0.00 sec)
+
+

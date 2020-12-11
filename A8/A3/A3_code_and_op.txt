@@ -1,0 +1,213 @@
+insert into customer values
+    -> (1, "S", "Sharma", "ABC", "Bandra", "Mumbai", "9999999999")
+    -> (2, "R", "Kulkarni", "DEF", "Kothrud", "Pune", "8888888888"),
+    -> (3, "P", "Singh", "GHI", "Rajiv Chowk", "New Delhi", "7777777777"),
+    -> (4, "J", "Kapoor", "JKL", "Sector-50", "Noida", "6666666666"),
+    -> (5, "K", "D'Souza", "MNO", "Andheri(W)", "Mumbai", "5555555555"),
+    -> (6, "P", "Newalkar", "PQR", "Warje", "Pune", "4444444444"),
+    -> (7, "S", "Holmes", "STU", "221 Baker St", "London", "3333333333"),
+    -> (8, "T", "Stark", "SI", "10880", "Malibu", "2222222222"),
+    -> (9, "E", "Macron", "VWX", "Gare de Lyon", "Paris", "1111111111"),
+    -> (10, "H", "Lesnitsky", "ZZZ", "Polis", "Moscow", "9090909090");
+    
+insert into orders values 
+    -> (1, 1, 1, 1, "2020-08-24"),
+    -> (2, 2, 2, 2, "2020-08-23"),
+    -> (3, 3, 3, 3, "2020-08-22"),
+    -> (4, 4, 4, 4, "2020-08-21"),
+    -> (5, 5, 5, 5, "2020-08-20"),
+    -> (6, 6, 6, 6, "2020-08-19");
+    
+mysql> insert into book values 
+    -> (1, "Hello", 123, "9999999999", "1111111111", "2006"),
+    -> (2, "World", 100, "8888888888", "2222222222", "2015"),
+    -> (3, "Bye", 200, "7777777777", "3333333333", "2015"),
+    -> (4, "Boom", 340, "6666666666", "4444444444", "2014"),
+    -> (5, "Thanks", 500, "5555555555", "5050505050", "2004"),
+    -> (6, "Done", "360", "1010101010", "2020202020", "2000");
+
+insert into author values
+    -> ("9999999999", "KO", "India"),
+    -> ("8888888888", "CJ", "Australia"),
+    -> ("7777777777", "JKR", "UK"),
+    -> ("6666666666", "IA", "Russia");
+    
+insert into publisher values
+    -> ("1111111111", "AZ", "Pune", "2020"),
+    -> ("2222222222", "BY", "Delhi", "2015"),
+    -> ("3333333333", "CX", "Sydney", "2016"),
+    -> ("4444444444", "DW", "Kyoto", "2015"),
+    -> ("5050505050", "EV", "Seoul", "2020");
+
+mysql> select * from customer;
++---------+------------+------------+--------------+--------------+-----------+------------+
+| cust_no | cust_fname | cust_lname | cust_company | cust_addr    | city      | cust_phone |
++---------+------------+------------+--------------+--------------+-----------+------------+
+|       1 | S          | Sharma     | ABC          | Bandra       | Mumbai    | 9999999999 |
+|       2 | R          | Kulkarni   | DEF          | Kothrud      | Pune      | 8888888888 |
+|       3 | P          | Singh      | GHI          | Rajiv Chowk  | New Delhi | 7777777777 |
+|       4 | J          | Kapoor     | JKL          | Sector-50    | Noida     | 6666666666 |
+|       5 | K          | D'Souza    | MNO          | Andheri(W)   | Mumbai    | 5555555555 |
+|       6 | P          | Newalkar   | PQR          | Warje        | Pune      | 4444444444 |
+|       7 | S          | Holmes     | STU          | 221 Baker St | London    | 3333333333 |
+|       8 | T          | Stark      | SI           | 10880        | Malibu    | 2222222222 |
+|       9 | E          | Macron     | VWX          | Gare de Lyon | Paris     | 1111111111 |
+|      10 | H          | Lesnitsky  | ZZZ          | Polis        | Moscow    | 9090909090 |
++---------+------------+------------+--------------+--------------+-----------+------------+
+10 rows in set (0.00 sec)
+
+mysql> select * from customer where city="Pune" OR city="Mumbai" OR cust_fname like 'p%' OR cust_fname like 'h%';
++---------+------------+------------+--------------+-------------+-----------+------------+
+| cust_no | cust_fname | cust_lname | cust_company | cust_addr   | city      | cust_phone |
++---------+------------+------------+--------------+-------------+-----------+------------+
+|       1 | S          | Sharma     | ABC          | Bandra      | Mumbai    | 9999999999 |
+|       2 | R          | Kulkarni   | DEF          | Kothrud     | Pune      | 8888888888 |
+|       3 | P          | Singh      | GHI          | Rajiv Chowk | New Delhi | 7777777777 |
+|       5 | K          | D'Souza    | MNO          | Andheri(W)  | Mumbai    | 5555555555 |
+|       6 | P          | Newalkar   | PQR          | Warje       | Pune      | 4444444444 |
+|      10 | H          | Lesnitsky  | ZZZ          | Polis       | Moscow    | 9090909090 |
++---------+------------+------------+--------------+-------------+-----------+------------+
+6 rows in set (0.00 sec)
+
+
+mysql> select count(distinct city) from customer;
++----------------------+
+| count(distinct city) |
++----------------------+
+|                    8 |
++----------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from book;
++------+--------+------------+------------+--------------+----------------+
+| isbn | title  | unit_price | author_no  | publisher_no | publisher_year |
++------+--------+------------+------------+--------------+----------------+
+|    1 | Hello  |        123 | 9999999999 | 1111111111   |           2006 |
+|    2 | World  |        105 | 8888888888 | 2222222222   |           2015 |
+|    3 | Bye    |        210 | 7777777777 | 3333333333   |           2015 |
+|    4 | Boom   |        340 | 6666666666 | 4444444444   |           2014 |
+|    5 | Thanks |        500 | 5555555555 | 5050505050   |           2004 |
+|    6 | Done   |        360 | 1010101010 | 2020202020   |           2000 |
++------+--------+------------+------------+--------------+----------------+
+6 rows in set (0.00 sec)
+
+
+mysql> update book set unit_price=1.05*unit_price where publisher_year="2015";
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from book;
++------+--------+------------+------------+--------------+----------------+
+| isbn | title  | unit_price | author_no  | publisher_no | publisher_year |
++------+--------+------------+------------+--------------+----------------+
+|    1 | Hello  |        123 | 9999999999 | 1111111111   |           2020 |
+|    2 | World  |        105 | 8888888888 | 2222222222   |           2015 |
+|    3 | Bye    |        210 | 7777777777 | 3333333333   |           2015 |
+|    4 | Boom   |        340 | 6666666666 | 4444444444   |           2014 |
+|    5 | Thanks |        500 | 5555555555 | 5050505050   |           2005 |
+|    6 | Done   |        360 | 1010101010 | 2020202020   |           2000 |
++------+--------+------------+------------+--------------+----------------+
+5 rows in set (0.00 sec)
+
+
+mysql> select * from author;
++------------+-------------+-----------+
+| author_no  | author_name | country   |
++------------+-------------+-----------+
+| 9999999999 | KO          | India     |
+| 8888888888 | CJ          | Australia |
+| 7777777777 | JKR         | UK        |
+| 6666666666 | IA          | Russia    |
++------------+-------------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> select * from author where country="India" or country="Australia";
++------------+-------------+-----------+
+| author_no  | author_name | country   |
++------------+-------------+-----------+
+| 9999999999 | KO          | India     |
+| 8888888888 | CJ          | Australia |
++------------+-------------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from publisher;
++--------------+----------------+----------------+------+
+| publisher_no | publisher_name | publisher_addr | year |
++--------------+----------------+----------------+------+
+| 1111111111   | AZ             | Pune           | 2020 |
+| 2222222222   | BY             | Delhi          | 2015 |
+| 3333333333   | CX             | Sydney         | 2016 |
+| 4444444444   | DW             | Kyoto          | 2015 |
+| 5050505050   | EV             | Seoul          | 2020 |
++--------------+----------------+----------------+------+
+5 rows in set (0.00 sec)
+
+mysql> select * from publisher where year="2015" or year="2016";
++--------------+----------------+----------------+------+
+| publisher_no | publisher_name | publisher_addr | year |
++--------------+----------------+----------------+------+
+| 2222222222   | BY             | Delhi          | 2015 |
+| 3333333333   | CX             | Sydney         | 2016 |
+| 4444444444   | DW             | Kyoto          | 2015 |
++--------------+----------------+----------------+------+
+3 rows in set (0.00 sec)
+
+mysql> select title, unit_price from book where unit_price = (select MAX(unit_price) from book);
++--------+------------+
+| title  | unit_price |
++--------+------------+
+| Thanks |        500 |
++--------+------------+
+1 row in set (0.00 sec)
+
+mysql> select title, unit_price from book where unit_price >= 300 and unit_price <= 400;
++-------+------------+
+| title | unit_price |
++-------+------------+
+| Boom  |        340 |
+| Done  |        360 |
++-------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select title, unit_price, publisher_year from book order by publisher_year DESC;
++--------+------------+----------------+
+| title  | unit_price | publisher_year |
++--------+------------+----------------+
+| World  |        105 |           2015 |
+| Bye    |        210 |           2015 |
+| Boom   |        340 |           2014 |
+| Hello  |        123 |           2006 |
+| Thanks |        500 |           2004 |
+| Done   |        360 |           2000 |
++--------+------------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> select title, author_no, publisher_no from book where publisher_year =
+"2000" or publisher_year = "2004" or publisher_year = "2006"
++--------+------------+--------------+
+| title  | author_no  | publisher_no |
++--------+------------+--------------+
+| Hello  | 9999999999 | 1111111111   |
+| Thanks | 5555555555 | 5050505050   |
+| Done   | 1010101010 | 2020202020   |
++--------+------------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> delete from customer where city = "Pune";
+Query OK, 2 rows affected (1.16 sec)
+
+mysql> select * from customer;
++---------+------------+------------+--------------+--------------+-----------+------------+
+| cust_no | cust_fname | cust_lname | cust_company | cust_addr    | city      | cust_phone |
++---------+------------+------------+--------------+--------------+-----------+------------+
+|       1 | S          | Sharma     | ABC          | Bandra       | Mumbai    | 9999999999 |
+|       3 | P          | Singh      | GHI          | Rajiv Chowk  | New Delhi | 7777777777 |
+|       4 | J          | Kapoor     | JKL          | Sector-50    | Noida     | 6666666666 |
+|       5 | K          | D'Souza    | MNO          | Andheri(W)   | Mumbai    | 5555555555 |
+|       7 | S          | Holmes     | STU          | 221 Baker St | London    | 3333333333 |
+|       8 | T          | Stark      | SI           | 10880        | Malibu    | 2222222222 |
+|       9 | E          | Macron     | VWX          | Gare de Lyon | Paris     | 1111111111 |
+|      10 | H          | Lesnitsky  | ZZZ          | Polis        | Moscow    | 9090909090 |
++---------+------------+------------+--------------+--------------+-----------+------------+
+8 rows in set (0.01 sec)
+

@@ -1,0 +1,113 @@
+mysql> select * from customer natural join orders;
++---------+------------+------------+--------------+-------------+-----------+------------+----------+------+------+------------+
+| cust_no | cust_fname | cust_lname | cust_company | cust_addr   | city      | cust_phone | order_no | isbn | qty  | odate      |
++---------+------------+------------+--------------+-------------+-----------+------------+----------+------+------+------------+
+|       1 | S          | Sharma     | ABC          | Bandra      | Mumbai    | 9999999999 |        1 |    1 |    1 | 2020-08-24 |
+|       3 | P          | Singh      | GHI          | Rajiv Chowk | New Delhi | 7777777777 |        3 |    3 |    3 | 2020-08-22 |
+|       4 | J          | Kapoor     | JKL          | Sector-50   | Noida     | 6666666666 |        4 |    4 |    4 | 2020-08-21 |
+|       5 | K          | D'Souza    | MNO          | Andheri(W)  | Mumbai    | 5555555555 |        5 |    5 |    5 | 2020-08-20 |
++---------+------------+------------+--------------+-------------+-----------+------------+----------+------+------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select book.title, author.author_name, author.country from book inner join author on book.author_no = author.author_no;
++-------+-------------+---------+
+| title | author_name | country |
++-------+-------------+---------+
+| Hello | KO          | India   |
+| Bye   | JKR         | UK      |
+| Boom  | IA          | Russia  |
++-------+-------------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select cust_no, cust_fname, cust_lname from customer where not exists (select order_no from orders where customer.cust_no = orders.cust_no );
++---------+------------+------------+
+| cust_no | cust_fname | cust_lname |
++---------+------------+------------+
+|       7 | S          | Holmes     |
+|       8 | T          | Stark      |
+|       9 | E          | Macron     |
+|      10 | H          | Lesnitsky  |
++---------+------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select book.title, book.isbn, orders.order_no from book inner join orders on book.isbn = orders.isbn where orders.order_no = null;
+Empty set (0.00 sec)
+
+mysql> select customer.cust_fname, book.title, book.author_no, book.publisher_no from customer inner join orders on customer.cust_no = orders.cust_no inner join book on orders.isbn = book.isbn where book.isbn = 5;
++------------+--------+------------+--------------+
+| cust_fname | title  | author_no  | publisher_no |
++------------+--------+------------+--------------+
+| K          | Thanks | 5555555555 | 5050505050   |
++------------+--------+------------+--------------+
+1 row in set (0.00 sec)
+
+select customer.cust_fname, count(*) as book_count from book inner join orders on book.isbn = orders.isbn inner join customer on customer.cust_no = orders.cust_no group by customer.cust_fname;
++------------+------------+
+| cust_fname | book_count |
++------------+------------+
+| S          |          1 |
+| P          |          1 |
+| J          |          1 |
+| K          |          1 |
++------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select customer.cust_no, orders.order_no, orders.isbn from customer inner join orders on customer.cust_no = orders.order_no inner join book on orders.isbn = book.isbn where book.title = 'hello';
++---------+----------+------+
+| cust_no | order_no | isbn |
++---------+----------+------+
+|       1 |        1 |    1 |
++---------+----------+------+
+1 row in set (0.00 sec)
+
+mysql> select customer.cust_company from customer inner join orders on customer.cust_no = orders.cust_no inner join book on orders.isbn = book.isbn where book.publisher_year = '2015';
++--------------+
+| cust_company |
++--------------+
+| GHI          |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> create view author_book as select * from book natural join author;
+Query OK, 0 rows affected (0.47 sec)
+
+mysql> select * from author_book;
++------------+------+-------+------------+--------------+----------------+-------------+---------+
+| author_no  | isbn | title | unit_price | publisher_no | publisher_year | author_name | country |
++------------+------+-------+------------+--------------+----------------+-------------+---------+
+| 9999999999 |    1 | Hello |        123 | 1111111111   |           2006 | KO          | India   |
+| 7777777777 |    3 | Bye   |        210 | 3333333333   |           2015 | JKR         | UK      |
+| 6666666666 |    4 | Boom  |        340 | 4444444444   |           2014 | IA          | Russia  |
++------------+------+-------+------------+--------------+----------------+-------------+---------+
+3 rows in set (0.00 sec)
+
+mysql> alter view author_book as select book.title, author.country from book natural join author;
+Query OK, 0 rows affected (0.77 sec)
+
+mysql> select * from author_book;
++-------+---------+
+| title | country |
++-------+---------+
+| Hello | India   |
+| Bye   | UK      |
+| Boom  | Russia  |
++-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> drop view author_book;
+Query OK, 0 rows affected (0.89 sec)
+
+mysql> show tables;
++------------------------+
+| Tables_in_DBMSL_groupA |
++------------------------+
+| author                 |
+| book                   |
+| customer               |
+| customer_view          |
+| orders                 |
+| publisher              |
++------------------------+
+6 rows in set (0.00 sec)
+
+

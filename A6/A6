@@ -1,0 +1,48 @@
+mysql> create table O_emp( empid int primary key, name varchar(20), city varchar(20));
+Query OK, 0 rows affected (5.12 sec)
+
+mysql> create table N_emp( empid int primary key, name varchar(20), city varchar(20));
+Query OK, 0 rows affected (5.12 sec)
+
+mysql> Delimiter //
+mysql> create procedure new1(in empid1 int)
+    -> begin
+    -> if not exists(select * from N_emp where empid=empid1) then
+    -> insert into N_emp select * from O_emp where empid=empid1;
+    -> end if;
+    -> end//
+Query OK, 0 rows affected (1.30 sec)
+
+mysql> create procedure new_cur_one(in empid_in int)
+    -> begin
+    -> declare c1 cursor for select empid from O_emp where empid=empid_in;
+    -> open c1;
+    -> fetch c1 into empid_in;
+    -> if not exists(select * from N_emp where empid=empid_in) then
+    -> insert into N_emp select * from O_emp where empid=empid_in;
+    -> end if;
+    -> close c1;
+    -> end//
+Query OK, 0 rows affected (0.53 sec)
+
+mysql> create procedure new_cur_all()
+    -> begin
+    -> declare empid_temp int;
+    -> declare exit_loop boolean;
+    -> declare c1 cursor for select empid from O_emp;
+    -> declare continue handler for not found set exit_loop = TRUE;
+    -> open c1;
+    -> emp_loop: LOOP
+    -> fetch c1 into empid_temp;
+    -> if not exists(select * from N_emp where empid=empid_temp) then
+    -> insert into N_emp select * from O_emp where empid=empid_temp;
+    -> end if;
+    -> if exit_loop then
+    -> close c1;
+    -> leave emp_loop;
+    -> end if;
+    -> end loop emp_loop;
+    -> end//
+Query OK, 0 rows affected (0.66 sec)
+
+

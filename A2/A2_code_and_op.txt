@@ -1,0 +1,145 @@
+CREATE TABLE `customer` (
+  `cust_no` int NOT NULL AUTO_INCREMENT,
+  `cust_fname` varchar(20),
+  `cust_lname` varchar(20),
+  `cust_company` varchar(20),
+  `cust_addr` varchar(100),
+  `city` varchar(20),
+  `cust_phone` varchar(10),
+  PRIMARY KEY (`cust_no`)
+);
+
+CREATE TABLE `orders` (
+  `order_no` int NOT NULL AUTO_INCREMENT,
+  `cust_no` int ,
+  `isbn` bigint ,
+  `qty` int ,
+  `odate` date ,
+  PRIMARY KEY (`order_no`),
+  UNIQUE KEY `isbn` (`isbn`),
+  KEY `fk_cust` (`cust_no`),
+  CONSTRAINT `fk_cust` FOREIGN KEY (`cust_no`) REFERENCES `customer` (`cust_no`) ON DELETE CASCADE
+);
+
+CREATE TABLE `book` (
+  `isbn` bigint ,
+  `title` varchar(20) ,
+  `unit_price` int ,
+  `author_no` varchar(20) ,
+  `publisher_no` varchar(20) ,
+  `publisher_year` year(4) ,
+  UNIQUE KEY `author_no` (`author_no`),
+  UNIQUE KEY `publisher_no` (`publisher_no`),
+  KEY `fk_order` (`isbn`),
+  CONSTRAINT `fk_order` FOREIGN KEY (`isbn`) REFERENCES `orders` (`isbn`) ON DELETE CASCADE
+);
+
+CREATE TABLE `author` (
+  `author_no` varchar(20),
+  `author_name` varchar(20),
+  `country` varchar(20),
+  KEY `fk_book` (`author_no`),
+  CONSTRAINT `fk_book` FOREIGN KEY (`author_no`) REFERENCES `book` (`author_no`) ON DELETE CASCADE
+);
+
+CREATE TABLE `publisher` (
+  `publisher_no` varchar(20) ,
+  `publisher_name` varchar(20) ,
+  `publisher_addr` varchar(100) ,
+  `year` year(4) ,
+  KEY `fk_pub` (`publisher_no`),
+  CONSTRAINT `fk_pub` FOREIGN KEY (`publisher_no`) REFERENCES `book` (`publisher_no`) ON DELETE CASCADE
+);
+
+mysql> show tables;
++-----------------+
+| Tables_in_dbmsl |
++-----------------+
+| author          |
+| book            |
+| customer        |
+| orders          |
+| publisher       |
++-----------------+
+5 rows in set (0.01 sec)
+
+mysql> desc customer;
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| cust_no      | int          | NO   | PRI | NULL    | auto_increment |
+| cust_fname   | varchar(20)  | YES  |     | NULL    |                |
+| cust_lname   | varchar(20)  | YES  |     | NULL    |                |
+| cust_company | varchar(20)  | YES  |     | NULL    |                |
+| cust_addr    | varchar(100) | YES  |     | NULL    |                |
+| city         | varchar(20)  | YES  |     | NULL    |                |
+| cust_phone   | varchar(20)  | YES  |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> desc orders;
++----------+--------+------+-----+---------+----------------+
+| Field    | Type   | Null | Key | Default | Extra          |
++----------+--------+------+-----+---------+----------------+
+| order_no | int    | NO   | PRI | NULL    | auto_increment |
+| cust_no  | int    | YES  | MUL | NULL    |                |
+| isbn     | bigint | YES  | UNI | NULL    |                |
+| qty      | int    | YES  |     | NULL    |                |
+| odate    | date   | YES  |     | NULL    |                |
++----------+--------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> desc book;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| isbn           | bigint      | YES  | MUL | NULL    |       |
+| title          | varchar(20) | YES  |     | NULL    |       |
+| unit_price     | int         | YES  |     | NULL    |       |
+| author_no      | varchar(20) | YES  | UNI | NULL    |       |
+| publisher_no   | varchar(20) | YES  | UNI | NULL    |       |
+| publisher_year | varchar(4)  | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> desc author;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| author_no   | varchar(20) | YES  | MUL | NULL    |       |
+| author_name | varchar(20) | YES  |     | NULL    |       |
+| country     | varchar(20) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc publisher;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| publisher_no   | varchar(20)  | YES  | MUL | NULL    |       |
+| publisher_name | varchar(20)  | YES  |     | NULL    |       |
+| publisher_addr | varchar(100) | YES  |     | NULL    |       |
+| year           | varchar(4)   | YES  |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc customer_view;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| cust_fname | varchar(20) | YES  |     | NULL    |       |
+| cust_lname | varchar(20) | YES  |     | NULL    |       |
+| cust_phone | varchar(10) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> show index from customer;
++----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table    | Non_unique | Key_name    | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| customer |          0 | PRIMARY     |            1 | cust_no     | A         |           8 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+| customer |          1 | fname_index |            1 | cust_fname  | A         |           7 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
++----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+2 rows in set (0.74 sec)
+
+

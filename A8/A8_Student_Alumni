@@ -1,0 +1,103 @@
+mysql> create table Student(
+    -> rollno int primary key,
+    -> name varchar(30),
+    -> doa date,
+    -> branch varchar(30),
+    -> percent float,
+    -> status varchar(40));
+Query OK, 0 rows affected (5.39 sec)
+
+mysql> create table Alumni(
+    -> rollno int primary key,
+    -> name varchar(30),
+    -> doa date,
+    -> branch varchar(30),
+    -> percent float,
+    -> status varchar(40));
+Query OK, 0 rows affected (5.39 sec)
+
+mysql> create trigger on_update
+    -> after update
+    -> on Student for each row
+    -> begin
+    -> if old.name <> new.name or
+    -> old.doa <> new.doa or
+    -> old.branch <> new.branch or
+    -> old.percent <> new.percent then
+    -> replace into Alumni values (
+    -> old.rollno,
+    -> old.name,
+    -> old.doa,
+    -> old.branch,
+    -> old.percent,
+    -> "UPDATED"
+    -> );
+    -> end if;
+    -> end//
+Query OK, 0 rows affected (0.55 sec)
+
+mysql> create trigger before_delete before delete on Student for each row replace into Alumni values ( old.rollno, old.name, old.doa,
+old.branch, old.percent, "BEFORE DELETE");//
+Query OK, 0 rows affected (0.88 sec)
+
+
+mysql> create trigger on_delete
+    -> after delete
+    -> on Student for each row
+    -> update into Alumni values (
+    -> old.rollno,
+    -> old.name,
+    -> old.doa,
+    -> old.branch,
+    -> old.percent,
+    -> "DELETED"
+    -> );//
+Query OK, 0 rows affected (1.28 sec)
+
+mysql> select * from Student;
++--------+------+------------+--------+---------+---------+
+| rollno | name | doa        | branch | percent | status  |
++--------+------+------------+--------+---------+---------+
+|      1 | KO   | 2018-08-01 | CE     |    92.3 | STUDENT |
+|      2 | TP   | 2018-08-01 | IT     |      95 | STUDENT |
+|      3 | PN   | 2018-08-01 | ETC    |    85.8 | STUDENT |
++--------+------+------------+--------+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> update Student set percent=93.3 where rollno=1;
+Query OK, 1 row affected (0.66 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Alumni;
++--------+------+------------+--------+---------+---------+
+| rollno | name | doa        | branch | percent | status  |
++--------+------+------------+--------+---------+---------+
+|      1 | KO   | 2018-08-01 | CE     |    92.3 | UPDATED |
++--------+------+------------+--------+---------+---------+
+1 row in set (0.00 sec)
+
+mysql> select * from Student;
++--------+------+------------+--------+---------+---------+
+| rollno | name | doa        | branch | percent | status  |
++--------+------+------------+--------+---------+---------+
+|      1 | KO   | 2018-08-01 | CE     |    93.3 | STUDENT |
+|      2 | TP   | 2018-08-01 | IT     |      95 | STUDENT |
+|      3 | PN   | 2018-08-01 | ETC    |    85.8 | STUDENT |
++--------+------+------------+--------+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> delete from Student where rollno=3;
+Query OK, 1 row affected (1.32 sec)
+
+mysql> select * from Alumni;
++--------+------+------------+--------+---------+---------+
+| rollno | name | doa        | branch | percent | status  |
++--------+------+------------+--------+---------+---------+
+|      1 | KO   | 2018-08-01 | CE     |    92.3 | UPDATED |
+|      3 | PN   | 2018-08-01 | ETC    |    85.8 | DELETED |
++--------+------+------------+--------+---------+---------+
+2 rows in set (0.00 sec)
+
+
+
+
