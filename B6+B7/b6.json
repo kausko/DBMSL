@@ -1,0 +1,44 @@
+{
+  "students": [
+    {
+      "id": "YRTUazt6EeuTJ5gi75RKjg",
+      "name": "Kaustubh Odak",
+      "dob": "02/07/2000",
+      "gender": "M",
+      "subjects": [
+        {
+          "name": "DS",
+          "duration": "1 week"
+        },
+        {
+          "name": "ADS",
+          "duration": "1 month"
+        }
+      ]
+    },
+    {
+      "id": "Ul7RezuGEeuzQ5gi75RKjg",
+      "name": "Ananya",
+      "dob": "28/04/2006",
+      "gender": "F",
+      "subjects": [
+        {
+          "name": "Math",
+          "duration": "6 months"
+        }
+      ]
+    },
+    {
+      "id": "YyrcNTuGEeuSlZgi75RKjg",
+      "name": "Pranjali",
+      "dob": "04/06/1996",
+      "gender": "F",
+      "subjects": [
+        {
+          "name": "HM",
+          "duration": "4 years"
+        }
+      ]
+    }
+  ]
+}
