@@ -1,4 +1,21 @@
-> db.software.aggregate([     {          $group: {              "_id": "$displayName",             "publisher": { $first: "$publisher" },             "machine": { $addToSet: { machine: '$machine' } }         }      },     {         $addFields: {             count: { $size: '$machine' },         }     },     { $sort: { count: -1 } },     { $project: { machine: 0 } },     { $skip: 0 },      { $limit: 10 } ]).pretty()
+> db.software.aggregate([     
+	{          
+		$group: {              
+			"_id": "$displayName",             
+			"publisher": { $first: "$publisher" },             
+			"machine": { $addToSet: { machine: '$machine' } }         
+			}      
+		},
+		{         
+			$addFields: {             
+				count: { $size: '$machine' },         
+			}     
+		},     
+		{ $sort: { count: -1 } },     
+		{ $project: { machine: 0 } },     
+		{ $skip: 0 },      
+		{ $limit: 10 } ]).pretty()
+
 { "_id" : "Yarn", "publisher" : "Yarn Contributors", "count" : 4 }
 { "_id" : "Google Update Helper", "publisher" : "Google LLC", "count" : 4 }
 {
@@ -31,7 +48,24 @@
 }
 > 
 
-> db.software.aggregate([     { $match: { publisher: "Microsoft Corporation" } },     {          $group: {              "_id": "$displayName",             "publisher": { $first: "$publisher" },             "machine": { $addToSet: { machine: '$machine' } }         }      },     {         $addFields: {             count: { $size: '$machine' },         }     },     { $sort: { count: -1 } },     { $project: { machine: 0 } },     { $skip: 0 },      { $limit: 10 } ]).pretty()
+> db.software.aggregate([     
+	{ $match: { publisher: "Microsoft Corporation" } },     
+	{          
+		$group: {              
+			"_id": "$displayName",             
+			"publisher": { $first: "$publisher" },             
+			"machine": { $addToSet: { machine: '$machine' } }         
+		}      
+	},     
+	{         
+		$addFields: {             
+			count: { $size: '$machine' },         
+		}     
+	},     
+	{ $sort: { count: -1 } },     
+	{ $project: { machine: 0 } },     
+	{ $skip: 0 },      
+	{ $limit: 10 } ]).pretty()
 
 {
 	"_id" : "Microsoft Edge",
@@ -83,5 +117,3 @@
 	"publisher" : "Microsoft Corporation",
 	"count" : 2
 }
-> 
-
